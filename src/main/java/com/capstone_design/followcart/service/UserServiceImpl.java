@@ -35,11 +35,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+    public boolean existsByUserid(String userid) {
+        return userRepository.findByUserid(userid) != null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
+        User user = userRepository.findByUserid(userid);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found with username: " + username);
+            throw new UsernameNotFoundException("User not found with userid: " + userid);
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(user.getUserid(), user.getPassword(), new ArrayList<>());
     }
 }

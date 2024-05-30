@@ -1,4 +1,4 @@
-package com.capstone_design.followcart;
+package com.capstone_design.followcart.integration;
 
 import com.capstone_design.followcart.model.User;
 import com.capstone_design.followcart.repository.UserRepository;
@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AuthControllerTest {
+public class IntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,7 +37,8 @@ public class AuthControllerTest {
     public void setUp() {
         userRepository.deleteAll();
         User user = new User();
-        user.setUsername("testuser");
+        user.setUserid("testuser");
+        user.setUsername("testusername");
         user.setPassword(passwordEncoder.encode("password"));
         userRepository.save(user);
     }
@@ -45,7 +46,8 @@ public class AuthControllerTest {
     @Test
     public void 회원가입_테스트() throws Exception {
         User newUser = new User();
-        newUser.setUsername("newuser");
+        newUser.setUserid("newuser");
+        newUser.setUsername("newusername");
         newUser.setPassword("123456");
 
         mockMvc.perform(post("/auth/signup")
@@ -58,7 +60,8 @@ public class AuthControllerTest {
     @Test
     public void 중복_회원가입_테스트() throws Exception {
         User newUser = new User();
-        newUser.setUsername("testuser");
+        newUser.setUserid("testuser");
+        newUser.setUsername("testusername");
         newUser.setPassword("123456");
 
         mockMvc.perform(post("/auth/signup")
@@ -71,7 +74,7 @@ public class AuthControllerTest {
     @Test
     public void 로그인_테스트() throws Exception {
         User loginRequest = new User();
-        loginRequest.setUsername("testuser");
+        loginRequest.setUserid("testuser");
         loginRequest.setPassword("password");
 
         mockMvc.perform(post("/auth/login")
@@ -84,7 +87,7 @@ public class AuthControllerTest {
     @Test
     public void 잘못된_로그인_테스트() throws Exception {
         User loginRequest = new User();
-        loginRequest.setUsername("testuser");
+        loginRequest.setUserid("testuser");
         loginRequest.setPassword("wrongpassword");
 
         mockMvc.perform(post("/auth/login")
