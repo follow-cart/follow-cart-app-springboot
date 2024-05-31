@@ -28,43 +28,30 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         try {
-            System.out.println("Trying to authenticate user: " + user.getUserid());
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUserid(), user.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok("로그인 성공!");
         } catch (Exception e) {
             e.printStackTrace(); // 로그에 예외 출력
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패!");
         }
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
-        if (userService.existsByUsername(user.getUsername())) {
-            return ResponseEntity.badRequest().body("Username is already taken");
-        }
         if (userService.existsByUserid(user.getUserid())) {
-            return ResponseEntity.badRequest().body("User ID is already taken");
+            return ResponseEntity.badRequest().body("현재 사용 중인 ID 입니다!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.saveUser(user);
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok("회원가입 성공!");
     }
-
-    @GetMapping("/check-username")
-    public ResponseEntity<?> checkUsername(@RequestParam String username) {
-        if (userService.existsByUsername(username)) {
-            return ResponseEntity.badRequest().body("Username is already taken");
-        }
-        return ResponseEntity.ok("Username is available");
-    }
-
     @GetMapping("/check-userid")
     public ResponseEntity<?> checkUserid(@RequestParam String userid) {
         if (userService.existsByUserid(userid)) {
-            return ResponseEntity.badRequest().body("User ID is already taken");
+            return ResponseEntity.badRequest().body("현재 사용 중인 ID 입니다!");
         }
-        return ResponseEntity.ok("User ID is available");
+        return ResponseEntity.ok("사용 가능한 ID 입니다!");
     }
 }
